@@ -1,0 +1,401 @@
+# ─── USUÁRIOS ────────────────────────────────────────────────────────────────
+### Criar usuário
+POST http://localhost:3000/usuarios
+Content-Type: application/json
+
+{
+  "nome": "João Silva",
+  "email": "joao@email.com",
+  "telefone": "11999999999",
+  "cpf": "123.456.789-00"
+}
+###
+### Criar segundo usuário
+POST http://localhost:3000/usuarios
+Content-Type: application/json
+
+{
+  "nome": "Maria Souza",
+  "email": "maria@email.com",
+  "telefone": "11988888888",
+  "cpf": "987.654.321-00"
+}
+###
+### Listar todos os usuários
+GET http://localhost:3000/usuarios
+###
+### Buscar usuário por ID
+GET http://localhost:3000/usuarios/1
+###
+### Atualizar usuário
+PUT http://localhost:3000/usuarios/1
+Content-Type: application/json
+
+{
+  "nome": "João Silva Atualizado",
+  "telefone": "11977777777"
+}
+###
+### Deletar usuário
+DELETE http://localhost:3000/usuarios/2
+###
+### Criar usuário com email duplicado (deve retornar erro 409)
+POST http://localhost:3000/usuarios
+Content-Type: application/json
+
+{
+  "nome": "Clone João",
+  "email": "joao@email.com",
+  "telefone": "11911111111",
+  "cpf": "111.111.111-11"
+}
+###
+### Criar usuário sem campos obrigatórios (deve retornar erro 400)
+POST http://localhost:3000/usuarios
+Content-Type: application/json
+
+{
+  "nome": "Sem Email"
+}
+###
+
+# ─── PRODUTOS ────────────────────────────────────────────────────────────────
+### Criar produto
+POST http://localhost:3000/produtos
+Content-Type: application/json
+
+{
+  "nome": "Vitamina C",
+  "preco": 29.90,
+  "estoque": 100,
+  "especificacoes": "500mg",
+  "composicao": "Ácido ascórbico",
+  "descricao": "Suplemento vitamínico"
+}
+###
+### Criar segundo produto
+POST http://localhost:3000/produtos
+Content-Type: application/json
+
+{
+  "nome": "Vitamina D",
+  "preco": 45.00,
+  "estoque": 50,
+  "especificacoes": "1000 UI",
+  "composicao": "Colecalciferol",
+  "descricao": "Suplemento de vitamina D3"
+}
+###
+### Criar terceiro produto
+POST http://localhost:3000/produtos
+Content-Type: application/json
+
+{
+  "nome": "Ômega 3",
+  "preco": 59.90,
+  "estoque": 30,
+  "especificacoes": "1g por cápsula",
+  "composicao": "Óleo de peixe",
+  "descricao": "Ácidos graxos essenciais"
+}
+###
+### Listar todos os produtos
+GET http://localhost:3000/produtos
+###
+### Buscar produto por ID
+GET http://localhost:3000/produtos/1
+###
+### Buscar produto por nome (busca parcial)
+GET http://localhost:3000/produtos?nome=Vitamina
+###
+### Atualizar produto
+PUT http://localhost:3000/produtos/1
+Content-Type: application/json
+
+{
+  "preco": 34.90,
+  "descricao": "Suplemento vitamínico - fórmula melhorada"
+}
+###
+### Atualizar somente estoque
+PATCH http://localhost:3000/produtos/1/estoque
+Content-Type: application/json
+
+{
+  "estoque": 200
+}
+###
+### Atualizar estoque sem campo obrigatório (deve retornar erro 400)
+PATCH http://localhost:3000/produtos/1/estoque
+Content-Type: application/json
+
+{}
+###
+### Deletar produto
+DELETE http://localhost:3000/produtos/3
+###
+### Buscar produto inexistente (deve retornar erro 404)
+GET http://localhost:3000/produtos/9999
+###
+
+# ─── RÓTULO / BULA ───────────────────────────────────────────────────────────
+### Buscar rótulo do produto
+GET http://localhost:3000/produtos/1/rotulo
+###
+### Buscar bula do produto
+GET http://localhost:3000/produtos/1/bula
+###
+### Buscar rótulo de produto inexistente (deve retornar erro 404)
+GET http://localhost:3000/produtos/9999/rotulo
+###
+### Buscar bula de produto inexistente (deve retornar erro 404)
+GET http://localhost:3000/produtos/9999/bula
+###
+
+# ─── CARRINHO ────────────────────────────────────────────────────────────────
+### Adicionar item ao carrinho (cria carrinho se não existir)
+POST http://localhost:3000/carrinhos/1/itens
+Content-Type: application/json
+
+{
+  "produto_id": 1,
+  "quantidade": 2
+}
+###
+### Adicionar segundo item ao carrinho
+POST http://localhost:3000/carrinhos/1/itens
+Content-Type: application/json
+
+{
+  "produto_id": 2,
+  "quantidade": 1
+}
+###
+### Adicionar item duplicado (deve somar quantidade)
+POST http://localhost:3000/carrinhos/1/itens
+Content-Type: application/json
+
+{
+  "produto_id": 1,
+  "quantidade": 3
+}
+###
+### Buscar carrinho do usuário
+GET http://localhost:3000/carrinhos/1
+###
+### Remover item específico do carrinho
+DELETE http://localhost:3000/carrinhos/1/itens/1
+###
+### Limpar todos os itens do carrinho
+DELETE http://localhost:3000/carrinhos/1
+###
+### Adicionar item com produto inexistente (deve retornar erro 404)
+POST http://localhost:3000/carrinhos/1/itens
+Content-Type: application/json
+
+{
+  "produto_id": 9999,
+  "quantidade": 1
+}
+###
+### Buscar carrinho de usuário inexistente (deve retornar erro 404)
+GET http://localhost:3000/carrinhos/9999
+###
+
+# ─── COMPRAS ─────────────────────────────────────────────────────────────────
+### Realizar compra com um item
+POST http://localhost:3000/compras
+Content-Type: application/json
+
+{
+  "usuario_id": 1,
+  "forma_pagamento": "cartao_credito",
+  "endereco": "Rua Exemplo, 123 - São Paulo/SP",
+  "itens": [
+    { "produto_id": 1, "quantidade": 2 }
+  ]
+}
+###
+### Realizar compra com múltiplos itens
+POST http://localhost:3000/compras
+Content-Type: application/json
+
+{
+  "usuario_id": 1,
+  "forma_pagamento": "pix",
+  "endereco": "Av. Paulista, 1000 - São Paulo/SP",
+  "itens": [
+    { "produto_id": 1, "quantidade": 1 },
+    { "produto_id": 2, "quantidade": 2 }
+  ]
+}
+###
+### Realizar compra com estoque insuficiente (deve retornar erro 400)
+POST http://localhost:3000/compras
+Content-Type: application/json
+
+{
+  "usuario_id": 1,
+  "forma_pagamento": "boleto",
+  "endereco": "Rua Teste, 456 - Rio de Janeiro/RJ",
+  "itens": [
+    { "produto_id": 1, "quantidade": 99999 }
+  ]
+}
+###
+### Realizar compra com produto inexistente (deve retornar erro 400)
+POST http://localhost:3000/compras
+Content-Type: application/json
+
+{
+  "usuario_id": 1,
+  "forma_pagamento": "cartao_debito",
+  "endereco": "Rua Teste, 789",
+  "itens": [
+    { "produto_id": 9999, "quantidade": 1 }
+  ]
+}
+###
+### Realizar compra sem itens (deve retornar erro 400)
+POST http://localhost:3000/compras
+Content-Type: application/json
+
+{
+  "usuario_id": 1,
+  "forma_pagamento": "pix",
+  "endereco": "Rua Vazia, 0",
+  "itens": []
+}
+###
+### Listar todas as compras
+GET http://localhost:3000/compras
+###
+### Listar compras de um usuário
+GET http://localhost:3000/compras/usuario/1
+###
+
+# ─── QUIZZES ─────────────────────────────────────────────────────────────────
+### Criar quiz
+POST http://localhost:3000/quizzes
+Content-Type: application/json
+
+{
+  "pergunta": "Qual vitamina é produzida pelo sol?",
+  "resposta": "Vitamina D"
+}
+###
+### Criar segundo quiz
+POST http://localhost:3000/quizzes
+Content-Type: application/json
+
+{
+  "pergunta": "Qual mineral é importante para os ossos?",
+  "resposta": "Cálcio"
+}
+###
+### Listar todos os quizzes
+GET http://localhost:3000/quizzes
+###
+### Buscar quiz por ID
+GET http://localhost:3000/quizzes/1
+###
+### Atualizar quiz
+PUT http://localhost:3000/quizzes/1
+Content-Type: application/json
+
+{
+  "pergunta": "Qual vitamina é sintetizada pela exposição solar?",
+  "resposta": "Vitamina D3"
+}
+###
+### Deletar quiz
+DELETE http://localhost:3000/quizzes/2
+###
+### Buscar quiz inexistente (deve retornar erro 404)
+GET http://localhost:3000/quizzes/9999
+###
+### Criar quiz sem campos obrigatórios (deve retornar erro 400)
+POST http://localhost:3000/quizzes
+Content-Type: application/json
+
+{
+  "pergunta": "Pergunta sem resposta"
+}
+###
+
+# ─── SUPORTE — MENSAGENS ─────────────────────────────────────────────────────
+### Enviar mensagem de suporte (com usuário)
+POST http://localhost:3000/suporte/mensagens
+Content-Type: application/json
+
+{
+  "usuario_id": 1,
+  "mensagem": "Não recebi meu pedido. Podem verificar?"
+}
+###
+### Enviar mensagem anônima (sem usuario_id)
+POST http://localhost:3000/suporte/mensagens
+Content-Type: application/json
+
+{
+  "mensagem": "Tenho dúvidas sobre os produtos disponíveis."
+}
+###
+### Listar todas as mensagens de suporte
+GET http://localhost:3000/suporte/mensagens
+###
+### Enviar mensagem sem campo obrigatório (deve retornar erro 400)
+POST http://localhost:3000/suporte/mensagens
+Content-Type: application/json
+
+{
+  "usuario_id": 1
+}
+###
+
+# ─── SUPORTE — FAQ ───────────────────────────────────────────────────────────
+### Criar FAQ
+POST http://localhost:3000/suporte/faq
+Content-Type: application/json
+
+{
+  "pergunta": "Como rastrear meu pedido?",
+  "resposta": "Acesse 'Meus Pedidos' e clique em rastrear."
+}
+###
+### Criar segundo FAQ
+POST http://localhost:3000/suporte/faq
+Content-Type: application/json
+
+{
+  "pergunta": "Qual o prazo de entrega?",
+  "resposta": "O prazo varia de 3 a 7 dias úteis dependendo da sua região."
+}
+###
+### Listar todos os FAQs
+GET http://localhost:3000/suporte/faq
+###
+### Atualizar FAQ
+PUT http://localhost:3000/suporte/faq/1
+Content-Type: application/json
+
+{
+  "resposta": "Acesse 'Meus Pedidos', clique em rastrear e insira o código de envio."
+}
+###
+### Deletar FAQ
+DELETE http://localhost:3000/suporte/faq/2
+###
+### Criar FAQ sem campos obrigatórios (deve retornar erro 400)
+POST http://localhost:3000/suporte/faq
+Content-Type: application/json
+
+{
+  "pergunta": "Pergunta sem resposta"
+}
+###
+
+# ─── HEALTH CHECK ────────────────────────────────────────────────────────────
+### Verificar status da API
+GET http://localhost:3000/
+###

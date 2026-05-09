@@ -1,6 +1,22 @@
 {
+  "name": "serenivita",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
   "dependencies": {
+    "better-sqlite3": "^12.9.0",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
-    "better-sqlite3": "^12.9.0"
+    "@types/express": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "nodemon": "^3.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0"
   }
 }
